@@ -64,3 +64,9 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+def bid(request, name):
+    return render(request,"auctions/bid.html",{
+        "item": name
+    })
+
+
