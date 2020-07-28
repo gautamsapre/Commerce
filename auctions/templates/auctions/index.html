@@ -2,6 +2,11 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    TODO
+    <ul>
+    {%for item in list%}
+        <li class="nav-item">
+            {{item}}
+        </li>
+    {% endfor %}
+    </ul>
 {% endblock %}
