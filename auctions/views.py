@@ -63,12 +63,6 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
-
-def bider(request, name):
-    return render(request,"auctions/bid.html",{
-        "item": name
-    })
-
 def create(request):
     return render(request, "auctions/create_listing.html", {
     })
@@ -81,3 +75,4 @@ def register_listing(request):
     return render(request,"auctions/index.html",{
         "list": listings.objects.all()
     })
+    
