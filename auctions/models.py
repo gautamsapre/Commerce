@@ -3,15 +3,15 @@ from django.db import models
 
 class User(AbstractUser):
     def __str__(self):
-        return f"{self.username}: {self.email} {self.id}"
+        return f"{self.username}: {self.email}"
 
 
 class bid(models.Model):
-    bid_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder", default = "", null=True)
-    bid = models.IntegerField()
+    bid_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder", default = "" , null=True)
+    bid = models.IntegerField(default = 0)
 
     def __str__(self):
-        return f"Highest bit is {self.bid} by {self.bid_by}"
+        return f"Highest bid is {self.bid} by {self.bid_by.username}"
 
 class listings(models.Model):
     name = models.CharField(max_length = 64)
@@ -20,4 +20,6 @@ class listings(models.Model):
     highest_bid = models.ForeignKey(bid, on_delete=models.CASCADE, related_name="bids", default = "No current bid", null=True)
     
     def __str__(self):
-        return f"{self.name}: \nPrice: {self.price} \nBy: {self.user.username}"
+        if self.highest_bid.bid_by.username == "NO_CURRENT_BIDDER":
+            return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- No current bid  and id is {self.id}"
+        return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- Highest bid is ${self.highest_bid.bid} by {self.highest_bid.bid_by.username}  and id is {self.id}"

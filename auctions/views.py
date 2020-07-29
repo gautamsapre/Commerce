@@ -64,9 +64,20 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-def bid(request, name):
+def bider(request, name):
     return render(request,"auctions/bid.html",{
         "item": name
     })
 
+def create(request):
+    return render(request, "auctions/create_listing.html", {
+    })
 
+def register_listing(request):
+    current_user = request.user
+    bid_default = bid.objects.get(bid=0)
+    listing = listings(name = request.POST['name'], price = request.POST['price'], user = current_user, highest_bid = bid_default)
+    listing.save()
+    return render(request,"auctions/index.html",{
+        "list": listings.objects.all()
+    })

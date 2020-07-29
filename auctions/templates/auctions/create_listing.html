@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <h2>Create Listing</h2>
+      <form action = "register-listing" method = "POST">
+        {% csrf_token %}
+            <input type="text" id="rlist_name" placeholder ="Name of the item" name = "name"><br><br>
+            <input type="text" id="rlist_price" placeholder ="Price of the item" name = "price"><br><br>
+            <input type="submit" value="List">
+        </form>
+
+{% endblock %}
