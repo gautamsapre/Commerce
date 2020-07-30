@@ -18,8 +18,9 @@ class listings(models.Model):
     price = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="active_listings", default = "", null=True) 
     highest_bid = models.ForeignKey(bid, on_delete=models.CASCADE, related_name="bids", default = "No current bid", null=True)
-    
+    image_file = models.ImageField(upload_to='product_images')
+
     def __str__(self):
-        if self.highest_bid.bid_by.username == "NO_CURRENT_BIDDER":
-            return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- No current bid  and id is {self.id}"
-        return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- Highest bid is ${self.highest_bid.bid} by {self.highest_bid.bid_by.username}  and id is {self.id}"
+        if self.highest_bid.bid_by.username == "DEFAULT":
+            return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- No current bid "
+        return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- Highest bid is ${self.highest_bid.bid} by {self.highest_bid.bid_by.username}"

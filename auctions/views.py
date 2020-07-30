@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
+import urllib.request
 from .models import *
 
 
@@ -70,7 +70,8 @@ def create(request):
 def register_listing(request):
     current_user = request.user
     bid_default = bid.objects.get(bid=0)
-    listing = listings(name = request.POST['name'], price = request.POST['price'], user = current_user, highest_bid = bid_default)
+    img =  urllib.request.urlretrieve(request.POST['Image_url'], current_user.username+"_"+request.POST['name']+".jpg")
+    listing = listings(name = request.POST['name'], price = request.POST['price'], user = current_user, highest_bid = bid_default, image_file = current_user.username+"_"+request.POST['name']+".jpg")
     listing.save()
     return render(request,"auctions/index.html",{
         "list": listings.objects.all()
@@ -86,7 +87,7 @@ def bider(request, id):
 def confirm_bid(request, id):
     current_user = request.user
     print(current_user)
-    if int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid):
+    if (int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid)) or (listings.objects.get(id=id).highest_bid.bid_by == current_user):
          return render(request,"auctions/bid.html",{
         "item": listings.objects.get(id=id),
         "lower": True

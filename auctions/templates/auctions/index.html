@@ -6,6 +6,7 @@
     {%for item in list%}
         <li class="nav-item">
             {{item}}
+            <img src="{{item.image_file}}" width="500" height="600">
             <a href="{{item.id}}/place-bid">Place bid</a>
         </li>
     {% endfor %}
