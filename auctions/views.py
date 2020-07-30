@@ -76,3 +76,24 @@ def register_listing(request):
         "list": listings.objects.all()
     })
     
+
+def bider(request, id):
+    return render(request,"auctions/bid.html",{
+        "item": listings.objects.get(id=id),
+        "lower": False
+    })
+
+def confirm_bid(request, id):
+    current_user = request.user
+    print(current_user)
+    if int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid):
+         return render(request,"auctions/bid.html",{
+        "item": listings.objects.get(id=id),
+        "lower": True
+        })
+    bid(bid_by=current_user, bid=request.POST['amount']).save()
+    listings.objects.filter(id=id).update(highest_bid=bid.objects.last())
+    return render(request,"auctions/bid.html",{
+        "item": listings.objects.get(id=id),
+        "lower": False
+    })
