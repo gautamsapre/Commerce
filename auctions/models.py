@@ -11,7 +11,7 @@ class bid(models.Model):
     bid = models.IntegerField(default = 0)
 
     def __str__(self):
-        return f"Highest bid is {self.bid} by {self.bid_by.username}"
+        return f"Highest bid is {self.bid} by {self.bid_by.username} "
 
 class listings(models.Model):
     name = models.CharField(max_length = 64)

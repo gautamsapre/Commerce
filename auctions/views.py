@@ -69,13 +69,11 @@ def create(request):
 
 def register_listing(request):
     current_user = request.user
-    bid_default = bid.objects.get(bid=0)
-    img =  urllib.request.urlretrieve(request.POST['Image_url'], current_user.username+"_"+request.POST['name']+".jpg")
-    listing = listings(name = request.POST['name'], price = request.POST['price'], user = current_user, highest_bid = bid_default, image_file = current_user.username+"_"+request.POST['name']+".jpg")
+    starting_bid = bid(bid_by= current_user, bid = request.POST['price'])
+    starting_bid.save()
+    listing = listings(name = request.POST['name'], price = request.POST['price'], user = current_user, highest_bid = starting_bid, image_file = request.POST['Image_url'])
     listing.save()
-    return render(request,"auctions/index.html",{
-        "list": listings.objects.all()
-    })
+    return HttpResponseRedirect(reverse("index"))
     
 
 def bider(request, id):
