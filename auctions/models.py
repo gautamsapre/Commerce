@@ -22,5 +22,10 @@ class listings(models.Model):
     in_watchlist = models.ManyToManyField(User, blank=True)
     def __str__(self):
         if self.highest_bid.bid_by.username == "DEFAULT":
-            return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- No current bid  + {self.id} "
-        return f"{self.name}: \nPrice is ${self.price} \nBy: {self.user.username} ----- Highest bid is ${self.highest_bid.bid} by {self.highest_bid.bid_by.username} + {self.id}"
+            return f"{self.name}: Price is ${self.price} By: {self.user.username} ----- No current bid  + {self.id} "
+        return f"{self.name}: Price is ${self.price} By: {self.user.username} ----- Highest bid is ${self.highest_bid.bid} by {self.highest_bid.bid_by.username} + {self.id}"
+
+class closed_items(models.Model):
+    listing = models.ForeignKey(listings, on_delete=models.CASCADE, related_name="bidder", default = "" , null=True)
+
+    

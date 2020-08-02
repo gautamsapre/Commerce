@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.urls import reverse
 import urllib.request
 from .models import *
@@ -79,33 +80,32 @@ def register_listing(request):
 def bider(request, id):
     myitem = (request.user == listings.objects.get(id=id).user)
     bid_button = listings.objects.get(id=id) in listings.objects.filter(in_watchlist = request.user)
+    last_bidder = (listings.objects.get(id=id).highest_bid.bid_by == request.user)
     return render(request,"auctions/item_info.html",{
         "item": listings.objects.get(id=id),
         "lower": False,
         "exists": bid_button,
-        "myitem": myitem
+        "myitem": myitem,
+        "last_bidder": last_bidder
     })
 
 def confirm_bid(request, id):
     bid_button = listings.objects.get(id=id) in listings.objects.filter(in_watchlist = request.user)
     current_user = request.user
     myitem = (current_user == listings.objects.get(id=id).user)
+    last_bidder = (listings.objects.get(id=id).highest_bid.bid_by == current_user)
     print(current_user)
-    if (int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid)) or (listings.objects.get(id=id).highest_bid.bid_by == current_user):
+    if (int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid)):
          return render(request,"auctions/item_info.html",{
         "item": listings.objects.get(id=id),
         "lower": True,
         "exists": bid_button,
-        "myitem": myitem
+        "myitem": myitem,
+        "last_bidder": last_bidder
         })
     bid(bid_by=current_user, bid=request.POST['amount']).save()
     listings.objects.filter(id=id).update(highest_bid=bid.objects.last())
-    return render(request,"auctions/item_info.html",{
-        "item": listings.objects.get(id=id),
-        "lower": False,
-        "exists": bid_button,
-        "myitem": myitem
-    })
+    return redirect('place-bid', id)
 def mylistings(request):
     return render(request,"auctions/mylistings.html",{
         "list": listings.objects.filter(user = request.user)
@@ -128,3 +128,5 @@ def removeFromWatchlist(request, item_id):
     return render(request,"auctions/watchlist.html",{
         "list": listings.objects.filter(in_watchlist = request.user)
     }) 
+def closeitem(request, item_id):
+    pass
