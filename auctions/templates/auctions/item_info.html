@@ -1,0 +1,48 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+    
+    <div id="container">
+        <div id="inner">        
+            <div class="child"> <img class="img" src="{{item.image_file}}"></div>
+                <div class="des"> 
+                    <h3>{{item.name}}</h3>
+                    <h6>Current Price: ${{item.highest_bid.bid}}</h6>
+                    <p>Lorem ipsum dolor sit amet...</p>
+                    {% if lower %}
+                        <h6>Error incorrect amount. Try again</h6>
+                    {% endif %}
+                    {% if myitem  == False %}
+                        <form action= "/{{item.id}}/confirm_bid" method = "POST">
+                        {% csrf_token %}
+                            <input type="text" id="amount" placeholder ="Bid Amount" name = "amount"><br><br>
+                            <input type="submit" value="Place bid">
+                        </form>
+                        {% if exists == False %}
+                            <button onclick="window.location.href='/{{item.id}}/insert_watchlist'">Add to Watchlist</button>
+                        {% else %}
+                            <button onclick="window.location.href='/{{item.id}}/removefrom_watchlist'">Remove from Watchlist</button>
+                        {% endif %}
+                    {% else %}
+                    </br></br></br>
+                    {% if item.highest_bid.bid_by == item.user %}
+                        <p>No Current Bid</p>
+                    {% else %}
+                        <p>Highest bid currently is ${{item.highest_bid.bid}} by {{item.highest_bid.bid_by.username}}</p>
+                    {% endif %}
+                    
+                    <p>Do you want to close the listing?</p>
+                    <form action= "/{{item.id}}/confirm_bid" method = "POST">
+                        {% csrf_token %}
+                            <button onclick="window.location.href='/{{item.id}}/removefrom_watchlist'">Close listing</button>
+                    </form>
+                    {% endif %}
+                    
+                    
+                </div>
+            <div class="child"></div>
+        </div>
+
+    </div>
+
+{% endblock %}

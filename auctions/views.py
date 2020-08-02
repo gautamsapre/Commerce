@@ -77,22 +77,54 @@ def register_listing(request):
     
 
 def bider(request, id):
-    return render(request,"auctions/bid.html",{
+    myitem = (request.user == listings.objects.get(id=id).user)
+    bid_button = listings.objects.get(id=id) in listings.objects.filter(in_watchlist = request.user)
+    return render(request,"auctions/item_info.html",{
         "item": listings.objects.get(id=id),
-        "lower": False
+        "lower": False,
+        "exists": bid_button,
+        "myitem": myitem
     })
 
 def confirm_bid(request, id):
+    bid_button = listings.objects.get(id=id) in listings.objects.filter(in_watchlist = request.user)
     current_user = request.user
+    myitem = (current_user == listings.objects.get(id=id).user)
     print(current_user)
     if (int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid)) or (listings.objects.get(id=id).highest_bid.bid_by == current_user):
-         return render(request,"auctions/bid.html",{
+         return render(request,"auctions/item_info.html",{
         "item": listings.objects.get(id=id),
-        "lower": True
+        "lower": True,
+        "exists": bid_button,
+        "myitem": myitem
         })
     bid(bid_by=current_user, bid=request.POST['amount']).save()
     listings.objects.filter(id=id).update(highest_bid=bid.objects.last())
-    return render(request,"auctions/bid.html",{
+    return render(request,"auctions/item_info.html",{
         "item": listings.objects.get(id=id),
-        "lower": False
+        "lower": False,
+        "exists": bid_button,
+        "myitem": myitem
     })
+def mylistings(request):
+    return render(request,"auctions/mylistings.html",{
+        "list": listings.objects.filter(user = request.user)
+    })
+def myWatchlist(request):
+    return render(request,"auctions/watchlist.html",{
+        "list": listings.objects.filter(in_watchlist = request.user)
+    })
+def insertToWatchlist(request, item_id):
+    item = listings.objects.get(id=item_id)
+    current_user = request.user
+    item.in_watchlist.add(current_user)
+    return render(request,"auctions/watchlist.html",{
+        "list": listings.objects.filter(in_watchlist = request.user)
+    }) 
+def removeFromWatchlist(request, item_id):
+    item = listings.objects.get(id=item_id)
+    current_user = request.user
+    item.in_watchlist.remove(current_user)
+    return render(request,"auctions/watchlist.html",{
+        "list": listings.objects.filter(in_watchlist = request.user)
+    }) 
