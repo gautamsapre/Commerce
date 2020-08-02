@@ -3,19 +3,42 @@
 {% block body %}
     <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     <h2>My Listings</h2>
-    <ul>
-        {%for item in list%}
-        <a href="/{{item.id}}/place-bid" class="sup">
-        <li class ="li_item">
-         
-            <img src="{{item.image_file}}"  width="300" height="200"/>
-            <h3>{{item.name}}</h3>
-            <h6>Current Price: ${{item.highest_bid.bid}}</h6>
-            <p>Lorem ipsum dolor sit amet...</p>
-            
-        </li>
-        </a>
-        {% endfor %}
-            
-    </ul>
+    <div>
+        <div>
+            <h3>Active Listings</h3>
+            <ul>
+                {%for item in list%}
+                <a href="/{{item.id}}/place-bid" class="sup">
+                <li class ="li_item">
+                
+                    <img src="{{item.image_file}}"  width="300" height="200"/>
+                    <h3>{{item.name}}</h3>
+                    <h6>Current Price: ${{item.highest_bid.bid}}</h6>
+                    <p>Lorem ipsum dolor sit amet...</p>
+                    
+                </li>
+                </a>
+                {% endfor %}
+                    
+            </ul>
+        </div>
+        <div>
+            <h3>Closed Listings</h3>
+            <ul>
+                {%for item in sold_list%}
+                <a href="/{{item.id}}/place-bid" class="sup">
+                <li class ="li_item">
+                
+                    <img src="{{item.image_file}}"  width="300" height="200"/>
+                    <h3>{{item.name}}</h3>
+                    <h6>Current Price: ${{item.highest_bid.bid}}</h6>
+                    <p>Lorem ipsum dolor sit amet...</p>
+                    
+                </li>
+                </a>
+                {% endfor %}
+                    
+            </ul>
+        </div>
+    </div>
 {% endblock %}

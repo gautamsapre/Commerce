@@ -10,7 +10,7 @@ from .models import *
 
 def index(request):
     return render(request,"auctions/index.html",{
-        "list": listings.objects.all()
+        "list": listings.objects.filter(sold = False)
     })
 
 
@@ -96,7 +96,7 @@ def confirm_bid(request, id):
     last_bidder = (listings.objects.get(id=id).highest_bid.bid_by == current_user)
     print(current_user)
     if (int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid)):
-         return render(request,"auctions/item_info.html",{
+        return render(request,"auctions/item_info.html",{
         "item": listings.objects.get(id=id),
         "lower": True,
         "exists": bid_button,
@@ -108,11 +108,12 @@ def confirm_bid(request, id):
     return redirect('place-bid', id)
 def mylistings(request):
     return render(request,"auctions/mylistings.html",{
-        "list": listings.objects.filter(user = request.user)
+        "list": listings.objects.filter(user = request.user, sold = False),
+        "sold_list": listings.objects.filter(user = request.user, sold = True)
     })
 def myWatchlist(request):
     return render(request,"auctions/watchlist.html",{
-        "list": listings.objects.filter(in_watchlist = request.user)
+        "list": listings.objects.filter(in_watchlist = request.user,  sold = False)
     })
 def insertToWatchlist(request, item_id):
     item = listings.objects.get(id=item_id)
@@ -129,4 +130,14 @@ def removeFromWatchlist(request, item_id):
         "list": listings.objects.filter(in_watchlist = request.user)
     }) 
 def closeitem(request, item_id):
-    pass
+    bid_button = listings.objects.get(id=item_id) in listings.objects.filter(in_watchlist = request.user)
+    myitem = (request.user == listings.objects.get(id=item_id).user)
+    last_bidder = (listings.objects.get(id=item_id).highest_bid.bid_by == request.user)
+    listings.objects.filter(id=item_id).update(sold = True)
+    return render(request,"auctions/item_info.html",{
+    "item": listings.objects.get(id=item_id),
+    "lower": False,
+    "exists": bid_button,
+    "myitem": myitem,
+    "last_bidder": last_bidder
+    })

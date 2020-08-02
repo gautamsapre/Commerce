@@ -20,12 +20,9 @@ class listings(models.Model):
     highest_bid = models.ForeignKey(bid, on_delete=models.CASCADE, related_name="bids", default = "No current bid", null=True)
     image_file = models.CharField(max_length = 5000, blank=True)
     in_watchlist = models.ManyToManyField(User, blank=True)
+    sold = models.BooleanField(default=False)
     def __str__(self):
         if self.highest_bid.bid_by.username == "DEFAULT":
             return f"{self.name}: Price is ${self.price} By: {self.user.username} ----- No current bid  + {self.id} "
         return f"{self.name}: Price is ${self.price} By: {self.user.username} ----- Highest bid is ${self.highest_bid.bid} by {self.highest_bid.bid_by.username} + {self.id}"
 
-class closed_items(models.Model):
-    listing = models.ForeignKey(listings, on_delete=models.CASCADE, related_name="bidder", default = "" , null=True)
-
-    
