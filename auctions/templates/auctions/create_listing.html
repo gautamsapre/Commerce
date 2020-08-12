@@ -4,10 +4,25 @@
     <h2>Create Listing</h2>
       <form action = "register-listing" method = "POST">
         {% csrf_token %}
-            <input type="text" id="rlist_name" placeholder ="Name of the item" name = "name"><br><br>
-            <input type="text" id="rlist_image" placeholder ="Image" name = "Image_url"><br><br>
-            <input type="text" id="rlist_price" placeholder ="Price of the item" name = "price"><br><br>
-            <input type="submit" value="List">
+            <h6>Listing name:</h6>
+            <input type="text" id="rlist_name"name = "name"><br><br>
+            <h6>Image URL:</h6>
+            <input type="text" id="rlist_image" name = "Image_url"><br><br>
+            <h6>Category:</h6>
+            <select id="category" name="category">
+              <option value="Fashion">Fashion</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Home">Home</option>
+              <option value="Toys">Toys</option>
+              <option value="Auto">Auto</option>
+            </select><br><br>
+            <h6>Description:</h6>
+            <textarea rows = "5" cols = "50" name = "description"></textarea><br>
+            <h6>Details:</h6>
+            <textarea rows = "5" cols = "50" name = "details"></textarea><br><br>
+            <h6>Strarting Price:</h6>
+            <input type="text" id="rlist_price" name = "price"><br><br>
+            <input type="submit" class="btn btn-primary" value="List">
         </form>
 
 {% endblock %}

@@ -33,20 +33,23 @@ body {
     cursor: pointer;
   }
 #inner{
+
   display: flex
 }
 .child {
   width: 500px;
-
+  
   /* Just so it's visible */
 }
 .img{
-  height: auto;
-  width: 100%;
 /* even more control with max-width */
-  max-width: 720px;
+  max-width: 500px;
 }
 .des {
   flex: 4;
 
+}
+.de{
+  resize: horizontal;
+  width: 200px;
 }

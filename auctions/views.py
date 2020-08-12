@@ -72,7 +72,7 @@ def register_listing(request):
     current_user = request.user
     starting_bid = bid(bid_by= current_user, bid = request.POST['price'])
     starting_bid.save()
-    listing = listings(name = request.POST['name'], price = request.POST['price'], user = current_user, highest_bid = starting_bid, image_file = request.POST['Image_url'])
+    listing = listings(name = request.POST['name'], price = request.POST['price'], details = request.POST['details'], description = request.POST['description'], user = current_user,category = request.POST['category'], highest_bid = starting_bid, image_file = request.POST['Image_url'])
     listing.save()
     return HttpResponseRedirect(reverse("index"))
     
@@ -86,7 +86,8 @@ def bider(request, id):
         "lower": False,
         "exists": bid_button,
         "myitem": myitem,
-        "last_bidder": last_bidder
+        "last_bidder": last_bidder,
+        "comments": comments.objects.filter(listing = listings.objects.get(id = id))
     })
 
 def confirm_bid(request, id):
@@ -95,13 +96,14 @@ def confirm_bid(request, id):
     myitem = (current_user == listings.objects.get(id=id).user)
     last_bidder = (listings.objects.get(id=id).highest_bid.bid_by == current_user)
     print(current_user)
-    if (int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid)):
+    if ((int(request.POST['amount']) <= int(listings.objects.get(id=id).highest_bid.bid)) and listings.objects.get(id=id).highest_bid.bid_by != listings.objects.get(id=id).user):
         return render(request,"auctions/item_info.html",{
         "item": listings.objects.get(id=id),
         "lower": True,
         "exists": bid_button,
         "myitem": myitem,
-        "last_bidder": last_bidder
+        "last_bidder": last_bidder,
+        "comments": comments.objects.filter(listing = listings.objects.get(id = id))
         })
     bid(bid_by=current_user, bid=request.POST['amount']).save()
     listings.objects.filter(id=id).update(highest_bid=bid.objects.last())
@@ -139,5 +141,16 @@ def closeitem(request, item_id):
     "lower": False,
     "exists": bid_button,
     "myitem": myitem,
-    "last_bidder": last_bidder
+    "last_bidder": last_bidder,
+    "comments": comments.objects.filter(listing = listings.objects.get(id = item_id))
+    })
+def add_comment(request, item_id):
+    comments(comment=request.POST['comment'], commentor = request.user, listing = listings.objects.get(id = item_id)).save()
+    return HttpResponseRedirect(reverse("place-bid", args=(item_id)))
+def browse_categories(request):
+    return render(request, "auctions/categories.html")
+def cat_listings(request, cat):
+    return render(request,"auctions/index.html",{
+        "list": listings.objects.filter(sold = False, category = cat),
+        "cat": cat
     })

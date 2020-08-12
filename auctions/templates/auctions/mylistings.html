@@ -1,7 +1,6 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
 {% block body %}
-    <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     <h2>My Listings</h2>
     <div>
         <div>
@@ -14,7 +13,7 @@
                     <img src="{{item.image_file}}"  width="300" height="200"/>
                     <h3>{{item.name}}</h3>
                     <h6>Current Price: ${{item.highest_bid.bid}}</h6>
-                    <p>Lorem ipsum dolor sit amet...</p>
+                    <p>{{item.description}}</p>
                     
                 </li>
                 </a>
@@ -31,8 +30,13 @@
                 
                     <img src="{{item.image_file}}"  width="300" height="200"/>
                     <h3>{{item.name}}</h3>
-                    <h6>Current Price: ${{item.highest_bid.bid}}</h6>
-                    <p>Lorem ipsum dolor sit amet...</p>
+                    {% if item.highest_bid.bid_by == item.user %}
+                        <h6>Item unsold, Listing Closed</h6>
+                    {% else %}
+                        <h6>Sold for: ${{item.highest_bid.bid}}</h6> 
+                    {% endif %}
+                    
+                    <p>{{item.description}}</p>
                     
                 </li>
                 </a>

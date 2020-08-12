@@ -6,17 +6,21 @@
         <div id="inner">        
             <div class="child"> <img class="img" src="{{item.image_file}}"></div>
                 <div class="des">
-                    <h3>{{item.name}}</h3>
+                    {% if exists == False %}
+                        <h3>{{item.name}}</h3>
+                    {% else %}
+                        <h3>{{item.name}} <span class="badge badge-secondary">Watchlist</span></h3>
+                    {% endif %}
                     {% if item.sold %}
-                    <p>Lorem ipsum dolor sit amet...</p>
+                    <p>{{item.description}}</p>
                         {% if item.highest_bid.bid_by == item.user %}
                             <h6>Item unsold, Listing Closed</h6>
                         {% else %}
                             <h6>SOLD for ${{item.highest_bid.bid}} to {{item.highest_bid.bid_by.username}}</h6>  
                         {% endif %}
                     {% else %}   
+                        <p>{{item.description}}</p>
                         <h6>Current Price: ${{item.highest_bid.bid}}</h6>
-                        <p>Lorem ipsum dolor sit amet...</p>
                         {% if lower %}
                             <h6>Error, amount lower than the current highest bid. To win this item you will need an amount higher than ${{item.highest_bid.bid}}</h6>
                         {% endif %}
@@ -28,13 +32,13 @@
                                     <form action= "/{{item.id}}/confirm_bid" method = "POST">
                                     {% csrf_token %}
                                         <input type="text" id="amount" placeholder ="Bid Amount" name = "amount"><br><br>
-                                        <input type="submit" value="Place bid">
+                                        <input type="submit" value="Place bid" class="btn btn-primary">
                                     </form>
                                 {% endif %}
                                 {% if exists == False %}
-                                    <button onclick="window.location.href='/{{item.id}}/insert_watchlist'">Add to Watchlist</button>
+                                    <br><button class="btn btn-primary" onclick="window.location.href='/{{item.id}}/insert_watchlist'">Add to Watchlist</button>
                                 {% else %}
-                                    <button onclick="window.location.href='/{{item.id}}/removefrom_watchlist'">Remove from Watchlist</button>
+                                    <br><button class="btn btn-primary" onclick="window.location.href='/{{item.id}}/removefrom_watchlist'">Remove from Watchlist</button>
                                 {% endif %}
                             {% else %}
                             </br></br></br>
@@ -43,16 +47,27 @@
                             {% else %}
                                 <p>Highest bid currently is ${{item.highest_bid.bid}} by {{item.highest_bid.bid_by.username}}</p>
                             {% endif %}
-                        
+                        <h5>Details:- </h5>
+                        <p>{{item.details}}</p>
                         <p>Do you want to close the listing?</p>
-                        <button onclick="window.location.href='/{{item.id}}/close-item'">Close listing</button>
+                        <button class="btn btn-primary" onclick="window.location.href='/{{item.id}}/close-item'">Close listing</button>
                         {% endif %}
 
                     {% endif %}
                     
                     
                 </div>
-            <div class="child"></div>
+            </div>
+            <div class="child">
+                <h4>Comments:</h4>
+                {%for comment in comments%}
+                    <h6>{{comment.commentor.username}}: {{comment.comment}}</h6> 
+                {% endfor %}
+                <form action= "/{{item.id}}/add-comment" method = "POST">
+                    {% csrf_token %}
+                        <textarea rows = "1" cols = "50" placeholder ="Comment"  name = "comment"></textarea></br>
+                        <input id = "comment_button" type="submit" value="Comment" class="btn btn-primary">
+                </form>
         </div>
 
     </div>
